@@ -97,23 +97,28 @@ typedef void (^_FDViewControllerWillAppearInjectBlock)(UIViewController *viewCon
 {
     // Forward to primary implementation.
     [self fd_viewWillAppear:animated];
-    
-    if (self.fd_willAppearInjectBlock) {
-        self.fd_willAppearInjectBlock(self, animated);
-    }
+    #if TARGET_IPHONE_SIMULATOR
+    #else
+        if (self.fd_willAppearInjectBlock) {
+            self.fd_willAppearInjectBlock(self, animated);
+        }
+    #endif
 }
 
 - (void)fd_viewWillDisappear:(BOOL)animated
 {
     // Forward to primary implementation.
     [self fd_viewWillDisappear:animated];
-    
+#if TARGET_IPHONE_SIMULATOR
+#else
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         UIViewController *viewController = self.navigationController.viewControllers.lastObject;
         if (viewController && !viewController.fd_prefersNavigationBarHidden) {
             [self.navigationController setNavigationBarHidden:NO animated:NO];
         }
     });
+#endif
+
 }
 
 - (_FDViewControllerWillAppearInjectBlock)fd_willAppearInjectBlock
