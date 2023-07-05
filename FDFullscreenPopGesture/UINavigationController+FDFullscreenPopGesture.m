@@ -81,6 +81,7 @@ typedef void (^_FDViewControllerWillAppearInjectBlock)(UIViewController *viewCon
 
 + (void)load
 {
+#if !TARGET_OS_SIMULATOR
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         Method viewWillAppear_originalMethod = class_getInstanceMethod(self, @selector(viewWillAppear:));
@@ -91,23 +92,25 @@ typedef void (^_FDViewControllerWillAppearInjectBlock)(UIViewController *viewCon
         Method viewWillDisappear_swizzledMethod = class_getInstanceMethod(self, @selector(fd_viewWillDisappear:));
         method_exchangeImplementations(viewWillDisappear_originalMethod, viewWillDisappear_swizzledMethod);
     });
+#endif
 }
 
 - (void)fd_viewWillAppear:(BOOL)animated
 {
     // Forward to primary implementation.
     [self fd_viewWillAppear:animated];
-    
-    if (self.fd_willAppearInjectBlock) {
-        self.fd_willAppearInjectBlock(self, animated);
-    }
+    #if TARGET_IPHONE_SIMULATOR
+    #else
+        if (self.fd_willAppearInjectBlock) {
+            self.fd_willAppearInjectBlock(self, animated);
+        }
+    #endif
 }
 
 - (void)fd_viewWillDisappear:(BOOL)animated
 {
     // Forward to primary implementation.
     [self fd_viewWillDisappear:animated];
-    
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         UIViewController *viewController = self.navigationController.viewControllers.lastObject;
         if (viewController && !viewController.fd_prefersNavigationBarHidden) {
