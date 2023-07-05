@@ -13,7 +13,7 @@ Pod::Spec.new do |s|
   # ――― Platform Specifics ――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
   s.platform = :ios, "11.0"
   # ――― Source Location ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
-  #s.source = { :git => "https://github.com/forkingdog/FDFullscreenPopGesture.git", :tag => "1.1.1" }
+  s.source = { :git => "https://github.com/vicgillx/FDFullscreenPopGesture.git", :tag => "1.1.1" }
   # ――― Source Code ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
   s.source_files  = "FDFullscreenPopGesture/*.{h,m}"
   # ――― Project Settings ――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
