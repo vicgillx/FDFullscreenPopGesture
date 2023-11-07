@@ -136,6 +136,7 @@ typedef void (^_FDViewControllerWillAppearInjectBlock)(UIViewController *viewCon
 + (void)load
 {
     // Inject "-pushViewController:animated:"
+#if !TARGET_OS_SIMULATOR
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         Class class = [self class];
@@ -153,6 +154,7 @@ typedef void (^_FDViewControllerWillAppearInjectBlock)(UIViewController *viewCon
             method_exchangeImplementations(originalMethod, swizzledMethod);
         }
     });
+#endif
 }
 
 - (void)fd_pushViewController:(UIViewController *)viewController animated:(BOOL)animated
